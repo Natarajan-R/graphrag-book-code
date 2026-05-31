@@ -1,0 +1,29 @@
+# GraphRAG System Dependencies
+
+# Core LangChain packages
+langchain==0.3.25
+langchain-community==0.3.25
+langchain-core==0.3.65
+langchain-experimental==0.3.4
+
+# Neo4j integration
+langchain-neo4j==0.4.0
+neo4j==5.28.1
+
+# Ollama integration
+langchain-ollama
+
+# Document processing
+pypdf==5.9.0
+python-docx==1.2.0
+
+# Text splitting and processing
+tiktoken==0.12.0
+
+
+# Utilities
+python-dotenv==1.1.0
+pydantic>=2.11.7
+pydantic-settings==2.12.0
+
+streamlit

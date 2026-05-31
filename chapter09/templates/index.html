@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphRAG Knowledge Query</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .query-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .query-input-wrapper {
+            position: relative;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .char-count {
+            position: absolute;
+            bottom: 8px;
+            right: 12px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .examples {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+        
+        .examples h4 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .example-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 4px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #667eea;
+            font-weight: 500;
+        }
+        
+        .result {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .result.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .answer-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .answer-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .answer-text {
+            line-height: 1.8;
+            color: #333;
+            font-size: 1.05em;
+        }
+        
+        .metadata {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .sources-section {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        
+        .sources-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .source-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .chip {
+            background: #f0f0f0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        .error {
+            display: none;
+            background: #fee;
+            border-left: 5px solid #f44;
+            padding: 20px;
+            border-radius: 12px;
+            color: #c00;
+            margin-top: 20px;
+        }
+        
+        .error.active {
+            display: block;
+        }
+        
+        .error-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>🔍 GraphRAG Knowledge Query</h1>
+                <p>Ask questions about your knowledge graph powered by hybrid retrieval</p>
+            </div>
+            
+            <div class="content">
+                <div class="query-section">
+                    <div class="input-group">
+                        <label for="question">Ask Your Question</label>
+                        <div class="query-input-wrapper">
+                            <textarea 
+                                id="question" 
+                                placeholder="What did Dr. Martinez develop?"
+                                maxlength="500"
+                                autofocus
+                            ></textarea>
+                            <span class="char-count" id="charCount">0/500</span>
+                        </div>
+                    </div>
+                    
+                    <button id="submitBtn" onclick="submitQuery()">
+                        <span>🚀</span>
+                        <span>Search Knowledge Graph</span>
+                    </button>
+                    
+                    <div class="examples">
+                        <h4>💡 Example Questions</h4>
+                        <span class="example-btn" onclick="setQuestion('What did Dr. Martinez develop?')">
+                            What did Dr. Martinez develop?
+                        </span>
+                        <span class="example-btn" onclick="setQuestion('Who works at QuantumCore Systems?')">
+                            Who works at QuantumCore Systems?
+                        </span>
+                        <span class="example-btn" onclick="setQuestion('Which company licensed CRISPR-Adapt?')">
+                            Which company licensed CRISPR-Adapt?
+                        </span>
+                        <span class="example-btn" onclick="setQuestion('What technologies are mentioned?')">
+                            What technologies are mentioned?
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Searching knowledge graph...</div>
+                </div>
+                
+                <div class="error" id="error">
+                    <span class="error-icon">⚠️</span>
+                    <span id="errorMessage"></span>
+                </div>
+                
+                <div class="result" id="result">
+                    <div class="answer-box">
+                        <h3>📝 Answer</h3>
+                        <div class="answer-text" id="answer"></div>
+                    </div>
+                    
+                    <div class="metadata">
+                        <div class="stat-card">
+                            <span class="stat-value" id="chunks">0</span>
+                            <span class="stat-label">Text Chunks</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-value" id="entities">0</span>
+                            <span class="stat-label">Entities</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-value" id="relationships">0</span>
+                            <span class="stat-label">Relationships</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Built with <a href="#">GraphRAG</a> • Powered by Neo4j + LLM
+        </div>
+    </div>
+    
+    <script>
+        const questionInput = document.getElementById('question');
+        const charCount = document.getElementById('charCount');
+        
+        // Update character count
+        questionInput.addEventListener('input', function() {
+            charCount.textContent = `${this.value.length}/500`;
+        });
+        
+        // Submit on Ctrl/Cmd + Enter
+        questionInput.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                submitQuery();
+            }
+        });
+        
+        function setQuestion(question) {
+            questionInput.value = question;
+            questionInput.focus();
+            charCount.textContent = `${question.length}/500`;
+        }
+        
+        async function submitQuery() {
+            const question = questionInput.value.trim();
+            
+            if (!question) {
+                showError('Please enter a question');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('result').classList.remove('active');
+            document.getElementById('error').classList.remove('active');
+            document.getElementById('submitBtn').disabled = true;
+            
+            try {
+                const response = await fetch('/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Request failed');
+                }
+                
+                // Display result
+                displayResult(data);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showError(error.message || 'An error occurred. Please try again.');
+            } finally {
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('submitBtn').disabled = false;
+            }
+        }
+        
+        function displayResult(data) {
+            document.getElementById('answer').textContent = data.answer || 'No answer provided';
+            document.getElementById('chunks').textContent = data.context_used?.chunks || 0;
+            document.getElementById('entities').textContent = data.context_used?.entities || 0;
+            document.getElementById('relationships').textContent = data.context_used?.relationships || 0;
+            
+            document.getElementById('result').classList.add('active');
+        }
+        
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('error').classList.add('active');
+        }
+    </script>
+</body>
+</html>
