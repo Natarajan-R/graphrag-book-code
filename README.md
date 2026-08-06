@@ -76,7 +76,7 @@ Each one is a hands-on build with its code in the open.
 
 | Book | Amazon | Code |
 |---|---|---|
-| **Enterprise AI Workflow Automation: Building Resilient Agentic Systems** | [US](https://www.amazon.com/dp/B0HCZC7VCC) · [IN](https://www.amazon.in/dp/B0HCZC7VCC) | [auto-sre-graph](https://github.com/Natarajan-R/auto-sre-graph) |
+| **Enterprise AI Workflow Automation** | [US](https://www.amazon.com/dp/B0HCZC7VCC) · [IN](https://www.amazon.in/dp/B0HCZC7VCC) | [auto-sre-graph](https://github.com/Natarajan-R/auto-sre-graph) |
 | **Building a Local AI Coding Agent** | [US](https://www.amazon.com/dp/B0H8B6QXXX) · [IN](https://www.amazon.in/dp/B0H8B6QXXX) | [local-ai-coding-agent](https://github.com/Natarajan-R/local-ai-coding-agent) |
 | **Agentic AI — A Hands-On Guide** | [US](https://www.amazon.com/dp/B0H6R7SZZB) · [IN](https://www.amazon.in/dp/B0H6R7SZZB) | [agentic-ai-book](https://github.com/Natarajan-R/agentic-ai-book) |
 
