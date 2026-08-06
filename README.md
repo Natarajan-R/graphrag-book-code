@@ -4,6 +4,8 @@ This repository contains the complete, runnable source code for the book
 **_GraphRAG: Building an Intelligent Research Assistant with Knowledge Graphs_**
 by Natarajan.
 
+📖 **Get it on Amazon Kindle:** [US](https://www.amazon.com/dp/B0H3QXVSY4) · [India](https://www.amazon.in/dp/B0H3QXVSY4)
+
 The code is organized **by chapter** — each folder holds the source files that
 that chapter teaches. Some files (e.g. `hybrid_retriever.py`, `answer_generator.py`)
 are reused and intentionally appear in more than one chapter folder so that each
@@ -65,6 +67,22 @@ python a05_process_document.py your_document.pdf
 ```
 
 See each chapter in the book for the full explanation of every script.
+
+---
+
+## More books by the author
+
+Each one is a hands-on build with its code in the open.
+
+| Book | Amazon | Code |
+|---|---|---|
+| **Enterprise AI Workflow Automation: Building Resilient Agentic Systems** | [US](https://www.amazon.com/dp/B0HCZC7VCC) · [IN](https://www.amazon.in/dp/B0HCZC7VCC) | [auto-sre-graph](https://github.com/Natarajan-R/auto-sre-graph) |
+| **Building a Local AI Coding Agent** | [US](https://www.amazon.com/dp/B0H8B6QXXX) · [IN](https://www.amazon.in/dp/B0H8B6QXXX) | [local-ai-coding-agent](https://github.com/Natarajan-R/local-ai-coding-agent) |
+| **Agentic AI — A Hands-On Guide** | [US](https://www.amazon.com/dp/B0H6R7SZZB) · [IN](https://www.amazon.in/dp/B0H6R7SZZB) | [agentic-ai-book](https://github.com/Natarajan-R/agentic-ai-book) |
+
+All titles → [Amazon author page](https://www.amazon.com/stores/author/B0H3T2MG83)
+
+---
 
 ## License
 
